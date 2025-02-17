@@ -1,12 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import Banner from "@/components/Banner";
+import NewsAlert from "@/components/NewsAlert";
+import QuickLinks from "@/components/QuickLinks";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-dubai-light font-noto">
+      <main className="container mx-auto py-6">
+        <h1 className="mb-6 text-center text-3xl font-bold text-dubai-primary">
+          بوابة موظفي دائرة الأراضي والأملاك
+        </h1>
+        <Banner />
+        <QuickLinks />
+      </main>
+      <NewsAlert
+        title="تعميم جديد"
+        content="نود إعلامكم بتحديث سياسات العمل المرن. يرجى الاطلاع على التفاصيل في صفحة السياسات والإجراءات."
+      />
     </div>
   );
 };
