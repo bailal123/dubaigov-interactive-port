@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 interface NewsAlertProps {
   title: string;
@@ -11,48 +10,80 @@ interface NewsAlertProps {
 
 const NewsAlert = ({ title, content }: NewsAlertProps) => {
   const [open, setOpen] = useState(true);
-  const [rated, setRated] = useState(false);
+  const [selectedMood, setSelectedMood] = useState<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleRating = (isPositive: boolean) => {
-    console.log(`User rated: ${isPositive ? "positive" : "negative"}`);
-    setRated(true);
-    setTimeout(() => setOpen(false), 1000);
+  const moods = [
+    { emoji: "😢", label: "حزين جداً" },
+    { emoji: "🙁", label: "حزين" },
+    { emoji: "😐", label: "محايد" },
+    { emoji: "🙂", label: "سعيد" },
+    { emoji: "😊", label: "سعيد جداً" },
+  ];
+
+  const handleSubmit = () => {
+    if (selectedMood !== null) {
+      console.log(`User mood rating: ${selectedMood + 1}`);
+      setSubmitted(true);
+      setTimeout(() => setOpen(false), 1000);
+    }
   };
 
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-center text-xl">
+            كيف تشعر اليوم؟
+          </AlertDialogTitle>
         </AlertDialogHeader>
-        <div className="py-4">{content}</div>
-        <AlertDialogFooter className="flex-col space-y-2">
-          {!rated ? (
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => handleRating(true)}
-                className="flex items-center gap-2 hover:bg-green-100 hover:text-green-600"
-              >
-                <ThumbsUp className="h-4 w-4" />
-                مفيد
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleRating(false)}
-                className="flex items-center gap-2 hover:bg-red-100 hover:text-red-600"
-              >
-                <ThumbsDown className="h-4 w-4" />
-                غير مفيد
-              </Button>
+        
+        {!submitted ? (
+          <>
+            <div className="flex flex-col items-center space-y-6 py-4">
+              <div className="flex justify-center gap-4">
+                {moods.map((mood, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedMood(index)}
+                    className={`transform rounded-full p-2 text-3xl transition-all hover:scale-110 ${
+                      selectedMood === index
+                        ? "scale-110 bg-dubai-primary/10 ring-2 ring-dubai-primary"
+                        : ""
+                    }`}
+                  >
+                    {mood.emoji}
+                  </button>
+                ))}
+              </div>
+              {selectedMood !== null && (
+                <p className="text-center text-gray-600">
+                  {moods[selectedMood].label}
+                </p>
+              )}
             </div>
-          ) : (
-            <p className="text-center text-green-600">شكراً لتقييمك!</p>
-          )}
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            إغلاق
-          </Button>
-        </AlertDialogFooter>
+            <AlertDialogFooter className="flex-col space-y-2 sm:flex-row sm:justify-center sm:space-x-2 sm:space-y-0">
+              <Button
+                onClick={handleSubmit}
+                disabled={selectedMood === null}
+                className="min-w-[120px]"
+              >
+                إرسال
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="min-w-[120px]"
+              >
+                إلغاء
+              </Button>
+            </AlertDialogFooter>
+          </>
+        ) : (
+          <div className="py-4 text-center">
+            <p className="text-green-600">شكراً لمشاركتنا شعورك!</p>
+          </div>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );
