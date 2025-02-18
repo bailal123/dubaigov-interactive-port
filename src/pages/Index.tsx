@@ -9,7 +9,7 @@ import QuickLinks from "@/components/QuickLinks";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,107 +25,76 @@ const Index = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [language, setLanguage] = useState<"ar" | "en">("ar");
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle("dark");
-  };
-
-  // Toggle language
-  const toggleLanguage = (lang: "ar" | "en") => {
-    setLanguage(lang);
-    document.documentElement.setAttribute("lang", lang);
-    document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-  };
+  const tasks = [
+    { date: new Date(2024, 2, 15), title: "اجتماع مجلس الإدارة" },
+    { date: new Date(2024, 2, 20), title: "ورشة عمل التخطيط الاستراتيجي" },
+    { date: new Date(2024, 2, 25), title: "لقاء الموظفين الشهري" },
+  ];
 
   return (
-    <div className={`min-h-screen font-noto ${isDarkMode ? "dark" : ""} ${language === "ar" ? "rtl" : "ltr"}`}>
-      <div className="min-h-screen bg-dubai-light dark:bg-gray-900 transition-colors duration-200">
-        <Header />
-        
-        {/* Theme & Language Controls */}
-        <div className="fixed top-4 z-20 flex gap-2" style={{ [language === "ar" ? "left" : "right"]: "6rem" }}>
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-full bg-white dark:bg-gray-800"
-            onClick={toggleDarkMode}
-          >
-            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full bg-white dark:bg-gray-800"
-              >
-                <Languages className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => toggleLanguage("ar")}>
-                العربية
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toggleLanguage("en")}>
-                English
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+    <div className={`min-h-screen bg-dubai-light dark:bg-gray-900 font-noto ${isDarkMode ? "dark" : ""}`}>
+      <Header />
+      
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="fixed right-4 top-4 z-20 rounded-lg bg-dubai-primary p-2 text-white shadow-lg"
+      >
+        <Menu className="h-6 w-6" />
+      </button>
+      
+      <button
+        onClick={() => setCalendarOpen(true)}
+        className="fixed left-4 top-4 z-20 rounded-full bg-dubai-secondary p-3 text-white shadow-lg transition-transform hover:scale-105"
+      >
+        <Calendar className="h-6 w-6" />
+      </button>
 
-        {/* Sidebar Toggle Button */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed z-20 rounded-lg bg-dubai-primary p-2 text-white shadow-lg dark:bg-dubai-secondary"
-          style={{ [language === "ar" ? "right" : "left"]: "1rem", top: "1rem" }}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-        
-        {/* Calendar Button & Dialog */}
-        <button
-          onClick={() => setCalendarOpen(true)}
-          className="fixed z-20 rounded-full bg-dubai-secondary p-3 text-white shadow-lg transition-transform hover:scale-105 dark:bg-dubai-primary"
-          style={{ [language === "ar" ? "left" : "right"]: "1rem", top: "1rem" }}
-        >
-          <Calendar className="h-6 w-6" />
-        </button>
-
-        <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <div className="grid gap-4 py-4">
-              <div className="flex flex-col items-center">
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
-                  inline
-                  locale={language === "ar" ? "ar-SA" : "en-US"}
-                  dateFormat="Pp"
-                  showTimeSelect
-                  className="dark:bg-gray-800 dark:text-white"
-                />
+      <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              {language === "ar" ? "التقويم والمهام" : "Calendar & Tasks"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col items-center">
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date: Date) => setSelectedDate(date)}
+                inline
+                locale={language === "ar" ? "ar-SA" : "en-US"}
+              />
+              <div className="mt-4 w-full space-y-2">
+                <h3 className="font-semibold">
+                  {language === "ar" ? "المهام القادمة" : "Upcoming Tasks"}
+                </h3>
+                {tasks.map((task, index) => (
+                  <div
+                    key={index}
+                    className="rounded-lg border bg-white p-3 shadow-sm dark:bg-gray-800"
+                  >
+                    <p className="text-sm font-medium">{task.title}</p>
+                    <p className="text-xs text-gray-500">
+                      {task.date.toLocaleDateString(language === "ar" ? "ar-SA" : "en-US")}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-        
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="container mx-auto py-6">
-          <Banner />
-          <QuickLinks />
-        </main>
-        <Footer />
-        <NewsAlert
-          title={language === "ar" ? "تعميم جديد" : "New Circular"}
-          content={
-            language === "ar"
-              ? "نود إعلامكم بتحديث سياسات العمل المرن. يرجى الاطلاع على التفاصيل في صفحة السياسات والإجراءات."
-              : "We would like to inform you about the flexible work policy update. Please check the details in the Policies and Procedures page."
-          }
-        />
-      </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <main className="container mx-auto py-6">
+        <Banner />
+        <QuickLinks />
+      </main>
+      <Footer />
+      <NewsAlert
+        title="تعميم جديد"
+        content="نود إعلامكم بتحديث سياسات العمل المرن. يرجى الاطلاع على التفاصيل في صفحة السياسات والإجراءات."
+      />
     </div>
   );
 };

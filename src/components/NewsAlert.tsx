@@ -1,6 +1,8 @@
 
-import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 interface NewsAlertProps {
   title: string;
@@ -8,31 +10,51 @@ interface NewsAlertProps {
 }
 
 const NewsAlert = ({ title, content }: NewsAlertProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [open, setOpen] = useState(true);
+  const [rated, setRated] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!isVisible) return null;
+  const handleRating = (isPositive: boolean) => {
+    console.log(`User rated: ${isPositive ? "positive" : "negative"}`);
+    setRated(true);
+    setTimeout(() => setOpen(false), 1000);
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-      <div className="animate-fade-in relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg">
-        <button
-          onClick={() => setIsVisible(false)}
-          className="absolute left-2 top-2 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-        >
-          <X className="h-5 w-5" />
-        </button>
-        <h3 className="mb-2 text-xl font-bold text-dubai-primary">{title}</h3>
-        <p className="text-gray-600">{content}</p>
-      </div>
-    </div>
+    <AlertDialog open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+        </AlertDialogHeader>
+        <div className="py-4">{content}</div>
+        <AlertDialogFooter className="flex-col space-y-2">
+          {!rated ? (
+            <div className="flex justify-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => handleRating(true)}
+                className="flex items-center gap-2 hover:bg-green-100 hover:text-green-600"
+              >
+                <ThumbsUp className="h-4 w-4" />
+                مفيد
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleRating(false)}
+                className="flex items-center gap-2 hover:bg-red-100 hover:text-red-600"
+              >
+                <ThumbsDown className="h-4 w-4" />
+                غير مفيد
+              </Button>
+            </div>
+          ) : (
+            <p className="text-center text-green-600">شكراً لتقييمك!</p>
+          )}
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            إغلاق
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

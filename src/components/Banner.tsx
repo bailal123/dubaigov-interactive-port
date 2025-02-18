@@ -5,8 +5,8 @@ import { useCallback, useState } from "react";
 
 const bannerImages = [
   "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1600&h=500&q=80",
-  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&h=500&q=80",
-  "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=1600&h=500&q=80",
+  "https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1600&h=500&q=80",
+  "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?auto=format&fit=crop&w=1600&h=500&q=80",
 ];
 
 const Banner = () => {
@@ -35,17 +35,25 @@ const Banner = () => {
             alt={`Banner ${index + 1}`}
             className="h-full w-full object-cover"
           />
+          <div className="absolute inset-0 bg-black/40">
+            <div className="flex h-full items-center justify-center text-center text-white">
+              <div>
+                <h2 className="mb-4 text-4xl font-bold">دائرة الأراضي والأملاك</h2>
+                <p className="text-xl">نحو مستقبل عقاري مستدام</p>
+              </div>
+            </div>
+          </div>
         </div>
       ))}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur-sm transition-all hover:bg-white"
+        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur-sm transition-all hover:bg-white"
       >
         <ChevronRight className="h-6 w-6 text-dubai-dark" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur-sm transition-all hover:bg-white"
+        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 backdrop-blur-sm transition-all hover:bg-white"
       >
         <ChevronLeft className="h-6 w-6 text-dubai-dark" />
       </button>
